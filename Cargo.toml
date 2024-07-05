@@ -1,5 +1,5 @@
 [package]
-name = "bevy_tdd_book_move_player_with_keyboard"
+name = "bevy_tdd_book_respond_to_just_keypressed"
 version = "0.1.0"
 edition = "2021"
 
