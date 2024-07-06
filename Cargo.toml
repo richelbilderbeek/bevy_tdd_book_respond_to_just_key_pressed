@@ -1,5 +1,5 @@
 [package]
-name = "bevy_tdd_book_respond_to_just_keypressed"
+name = "bevy_tdd_book_respond_to_just_key_pressed"
 version = "0.1.0"
 edition = "2021"
 
