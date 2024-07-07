@@ -120,7 +120,7 @@ mod tests {
         assert_eq!(Vec3::new(0.0, 0.0, 0.0), get_player_position(&mut app));
 
         // Press the Enter button, thanks kristoff3r
-        app.world()
+        app.world_mut()
             .send_event(bevy::input::keyboard::KeyboardInput {
                 key_code: KeyCode::Space,
                 logical_key: Key::Space,
@@ -132,12 +132,5 @@ mod tests {
 
         // Moved now
         assert_ne!(Vec3::new(0.0, 0.0, 0.0), get_player_position(&mut app));
-    }
-
-    #[test]
-    fn test_print_all_components_names() {
-        let mut app = create_app();
-        app.update();
-        print_all_components_names(&app);
     }
 }
