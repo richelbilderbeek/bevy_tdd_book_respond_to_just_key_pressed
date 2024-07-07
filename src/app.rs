@@ -49,7 +49,7 @@ fn respond_to_keyboard(
 #[cfg(test)]
 pub fn count_n_players(app: &App) -> usize {
     let mut n = 0;
-    for c in app.world.components().iter() {
+    for c in app.world().components().iter() {
         if c.name().contains("::Player") {
             n += 1;
         }
@@ -62,16 +62,9 @@ fn get_player_position(app: &mut App) -> Vec3 {
     // Do 'app.update()' before calling this function,
     // else this assert goes off.
     assert_eq!(count_n_players(app), 1);
-    let mut query = app.world.query::<(&Transform, &Player)>();
-    let (transform, _) = query.single(&app.world);
+    let mut query = app.world_mut().query::<(&Transform, &Player)>();
+    let (transform, _) = query.single(&app.world());
     transform.translation
-}
-
-#[cfg(test)]
-fn print_all_components_names(app: &App) {
-    for c in app.world.components().iter() {
-        println!("{}", c.name())
-    }
 }
 
 #[cfg(test)]
@@ -127,12 +120,13 @@ mod tests {
         assert_eq!(Vec3::new(0.0, 0.0, 0.0), get_player_position(&mut app));
 
         // Press the Enter button, thanks kristoff3r
-        app.world.send_event(bevy::input::keyboard::KeyboardInput {
-            key_code: KeyCode::Space,
-            logical_key: Key::Space,
-            state: bevy::input::ButtonState::Pressed,
-            window: Entity::PLACEHOLDER,
-        });
+        app.world()
+            .send_event(bevy::input::keyboard::KeyboardInput {
+                key_code: KeyCode::Space,
+                logical_key: Key::Space,
+                state: bevy::input::ButtonState::Pressed,
+                window: Entity::PLACEHOLDER,
+            });
 
         app.update();
 
