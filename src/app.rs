@@ -47,24 +47,19 @@ fn respond_to_keyboard(
 }
 
 #[cfg(test)]
-pub fn count_n_players(app: &App) -> usize {
-    let mut n = 0;
-    for c in app.world().components().iter() {
-        if c.name().contains("::Player") {
-            n += 1;
-        }
-    }
-    n
+fn count_n_players(app: &mut App) -> usize {
+    let mut query = app.world_mut().query::<&Player>();
+    return query.iter(app.world_mut()).len();
 }
 
 #[cfg(test)]
-fn get_player_position(app: &mut App) -> Vec3 {
+fn get_player_position(app: &mut App) -> Vec2 {
     // Do 'app.update()' before calling this function,
     // else this assert goes off.
     assert_eq!(count_n_players(app), 1);
     let mut query = app.world_mut().query::<(&Transform, &Player)>();
     let (transform, _) = query.single(app.world());
-    transform.translation
+    transform.translation.xy()
 }
 
 #[cfg(test)]
@@ -83,31 +78,22 @@ mod tests {
 
     #[test]
     fn test_empty_app_has_no_players() {
-        let app = App::new();
-        assert_eq!(count_n_players(&app), 0);
-    }
-
-    #[test]
-    fn test_add_player_adds_a_player() {
         let mut app = App::new();
-        assert_eq!(count_n_players(&app), 0);
-        app.add_systems(Startup, add_player);
-        app.update();
-        assert_eq!(count_n_players(&app), 1);
+        assert_eq!(count_n_players(&mut app), 0);
     }
 
     #[test]
     fn test_create_app_has_a_player() {
         let mut app = create_app();
         app.update();
-        assert_eq!(count_n_players(&app), 1);
+        assert_eq!(count_n_players(&mut app), 1);
     }
 
     #[test]
     fn test_player_is_at_origin() {
         let mut app = create_app();
         app.update();
-        assert_eq!(get_player_position(&mut app), Vec3::new(0.0, 0.0, 0.0));
+        assert_eq!(get_player_position(&mut app), Vec2::new(0.0, 0.0));
     }
 
     #[test]
@@ -117,7 +103,7 @@ mod tests {
         app.update();
 
         // Not moved yet
-        assert_eq!(Vec3::new(0.0, 0.0, 0.0), get_player_position(&mut app));
+        assert_eq!(get_player_position(&mut app), Vec2::new(0.0, 0.0));
 
         // Press the Enter button, thanks kristoff3r
         app.world_mut()
@@ -131,6 +117,6 @@ mod tests {
         app.update();
 
         // Moved now
-        assert_ne!(Vec3::new(0.0, 0.0, 0.0), get_player_position(&mut app));
+        assert_ne!(get_player_position(&mut app), Vec2::new(0.0, 0.0));
     }
 }
