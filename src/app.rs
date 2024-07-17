@@ -66,7 +66,6 @@ fn get_player_position(app: &mut App) -> Vec2 {
 mod tests {
     use super::*;
 
-
     #[test]
     fn test_empty_app_has_no_players() {
         let mut app = App::new();
